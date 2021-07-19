@@ -1,68 +1,49 @@
 package br.cin.ufpe.ffcs.jmiddleware.distribuicao;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
 
+import br.cin.ufpe.ffcs.jmiddleware.model.Message;
+import br.cin.ufpe.ffcs.jmiddleware.model.MessageBody;
+import br.cin.ufpe.ffcs.jmiddleware.model.MessageHeader;
+import br.cin.ufpe.ffcs.jmiddleware.model.MessageType;
 import br.cin.ufpe.ffcs.jmiddleware.model.RemoteObject;
+import br.cin.ufpe.ffcs.jmiddleware.model.ReplyBody;
+import br.cin.ufpe.ffcs.jmiddleware.model.ReplyHeader;
 
 public class Invoker {
 	
-	private ServerSocket serverSocket = null;
-	private Socket conn = null;
-	private int porta;
-
-	public Invoker(int porta) {
-		super();
-		this.porta = porta;
-	}
-
-	public void invoke() throws IOException {
-        ObjectOutputStream saida;
-        ObjectInputStream entrada;
-        boolean endConnection = false;
-        String convertedMessage = "";
-        
+	public byte[] invoke(byte[] m) throws IOException {
+		Marshaller marshaller = new Marshaller();
+		Message i = marshaller.unmarshall(m);
+		String convertedMessage = "";
+		
 		try {
-			serverSocket = new ServerSocket(porta);
+			String operation = i.getBody().getRequestHeader().getOperation();
+			String params = i.getBody().getRequestBody().getBody().get(0);
 			
-			while(!endConnection) {
-				System.out.println("Ouvindo na porta: " + this.porta);
-				
-				conn = serverSocket.accept();
-				
-				System.out.println("Conexao estabelecida com: " + conn.getInetAddress().getHostAddress());
-				
-                saida = new ObjectOutputStream(conn.getOutputStream());
-                entrada = new ObjectInputStream(conn.getInputStream());
-                
-                do {
-    				Marshaller marshaller = new Marshaller();
-    				int tamanho = entrada.readInt();
-    				byte[] unmashalledMsg = entrada.readNBytes(tamanho);
-    				String i = marshaller.unmarshall(unmashalledMsg);
-    				
-    				RemoteObject remoteObject = new RemoteObject();
-    				convertedMessage = remoteObject.convertToUpper(i);
-    				
-    				saida.writeObject(convertedMessage);
-    				saida.flush();
-                } while(!convertedMessage.equalsIgnoreCase("close"));
-
-                System.out.println("Conexao encerrada pelo cliente.");
-                endConnection = true;
-                entrada.close();
-                saida.close();
-                conn.close();
+			RemoteObject remoteObject = new RemoteObject();
+			switch (operation) {
+			case "convertToUpper":
+				convertedMessage = remoteObject.convertToUpper(params);
+				break;
+			case "convertToLower":
+				convertedMessage = remoteObject.convertToLower(params);
+				break;
+			default:
+				break;
 			}
+			
+			ReplyHeader replyHeader = new ReplyHeader();
+			ReplyBody replyBody = new ReplyBody(convertedMessage);
+			MessageHeader messageHeader = new MessageHeader("MyMid", 1, false, MessageType.RESPONSE);
+			MessageBody messageBody = new MessageBody(null, null, replyHeader, replyBody);
+			Message message = new Message(messageHeader, messageBody);    				
+			
+			return marshaller.marshall(message);
 		} catch(Exception e) {
 			e.printStackTrace();
-		} finally {
-			serverSocket.close();
 		}
-				
+		return m;
 	}
 
 }

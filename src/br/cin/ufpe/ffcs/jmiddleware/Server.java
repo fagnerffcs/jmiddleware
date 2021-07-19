@@ -13,10 +13,12 @@ public class Server {
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		if(protocol.equals(MiddlewareProtocol.TCP)) {
 			ServerRequestHandlerTCP seHandlerTCP = new ServerRequestHandlerTCP(1300);
-			seHandlerTCP.receive();
+			seHandlerTCP.sendReceive();
 		} else {
 			ServerRequestHandlerUDP seHandlerUDP = new ServerRequestHandlerUDP(1300);
-			seHandlerUDP.receive();
+			byte[] msgDoCliente = seHandlerUDP.receive();
+			String msgFmt = new String(msgDoCliente);
+			seHandlerUDP.send(msgFmt.getBytes());			
 		}
 	}
 }

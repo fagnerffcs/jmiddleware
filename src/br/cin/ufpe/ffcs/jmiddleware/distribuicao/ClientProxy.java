@@ -1,73 +1,40 @@
 package br.cin.ufpe.ffcs.jmiddleware.distribuicao;
 
-import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 
-import br.cin.ufpe.ffcs.jmiddleware.model.IChat;
+import br.cin.ufpe.ffcs.jmiddleware.model.IConvertCase;
 import br.cin.ufpe.ffcs.jmiddleware.model.MiddlewareProtocol;
 
-public class ClientProxy implements Serializable, IChat {
+public class ClientProxy implements Serializable, IConvertCase {
 	
 	private static final long serialVersionUID = 1L;
-	private int port;
 	private String host;
-	private String objectId;
-	private Requestor requestor;
+	private int port;
 	
-	public int getPort() {
-		return port;
-	}
-
-	public void setPort(int port) {
-		this.port = port;
-	}
-
-	public String getHost() {
-		return host;
-	}
-
-	public void setHost(String host) {
-		this.host = host;
-	}
-
 	public ClientProxy() {
 		super();
 	}
 	
-	public ClientProxy(int port, String host, String objectId) {
+	public ClientProxy(int port, String host) {
 		super();
-		this.port = port;
 		this.host = host;
-		this.objectId = objectId;
-		this.requestor = new Requestor(MiddlewareProtocol.TCP, "localhost", this.getPort());
+		this.port = port;
 	}
 
 	@Override
-	public void enviarMensagem(String mensagem) {
+	public String convertToUpper(String mensagem) {
 		try {
-			requestor.send(mensagem);
-		} catch (IOException | InterruptedException e) {
+			Requestor requestor = new Requestor(MiddlewareProtocol.TCP, host, port);
+			ArrayList<String> params = new ArrayList<String>();
+			params.add(mensagem);
+			Request request = new Request("convertToUpper", params);
+			Invocation invocation = new Invocation(request);
+			return requestor.invoke(invocation);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public String receberMensagem() {
-		try {
-			return requestor.receive();
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		return null;
-	}
-
-	public String getObjectId() {
-		return objectId;
-	}
-
-	public void setObjectId(String objectId) {
-		this.objectId = objectId;
+		return "";
 	}
 	
 }

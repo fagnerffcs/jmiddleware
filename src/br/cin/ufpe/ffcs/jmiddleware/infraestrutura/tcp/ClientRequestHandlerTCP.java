@@ -1,8 +1,8 @@
 package br.cin.ufpe.ffcs.jmiddleware.infraestrutura.tcp;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -14,8 +14,8 @@ public class ClientRequestHandlerTCP implements IClientRequestHandler {
 	private int porta;
 	
 	private Socket clientSocket = null;
-    private ObjectOutputStream saida;
-    private ObjectInputStream entrada;
+    private DataOutputStream saida;
+    private DataInputStream entrada;
 	
 	public ClientRequestHandlerTCP(String host, int porta) throws UnknownHostException, IOException {
 		super();
@@ -25,23 +25,24 @@ public class ClientRequestHandlerTCP implements IClientRequestHandler {
 	}
 	
 	public void send(byte[] msg) throws IOException, InterruptedException{
-		saida = new ObjectOutputStream(clientSocket.getOutputStream());
+		saida = new DataOutputStream(clientSocket.getOutputStream());
 		saida.writeInt(msg.length);
 		saida.write(msg);
 		saida.flush();
 	}
 	
 	public byte[] receive() throws IOException, InterruptedException{
-		String retorno = "";
-		entrada = new ObjectInputStream(clientSocket.getInputStream());
+		byte[] retorno = null;
+		int tamanho;
+		entrada = new DataInputStream(clientSocket.getInputStream());
 		try {
-			retorno = (String) entrada.readObject();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			tamanho = entrada.readInt();
+			retorno = new byte[tamanho];
+			entrada.read(retorno, 0, tamanho);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return retorno.getBytes();
+		return retorno;
 	}
 
 }

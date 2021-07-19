@@ -4,14 +4,14 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 
 import br.cin.ufpe.ffcs.jmiddleware.distribuicao.ClientProxy;
+import br.cin.ufpe.ffcs.jmiddleware.identification.AbsoluteObjectReference;
 
 public class Client {
 	
 	public static void main(String[] args) throws UnknownHostException, IOException, ClassNotFoundException, 
 												  InterruptedException {
-		ClientProxy clientProxy = new ClientProxy(1300, "localhost", "RemoteObject");
-		clientProxy.enviarMensagem("frase com letras minusculas");
-		String retorno = clientProxy.receberMensagem();
-		System.out.println("Mensagem do servidor: " + retorno);
+		AbsoluteObjectReference aor = new AbsoluteObjectReference(1300, "localhost", "RemoteObject");
+		ClientProxy clientProxy = new ClientProxy(aor.getPorta(), aor.getHost());
+		System.out.println(clientProxy.convertToUpper("frase com letras minusculas"));
 	}
 }
