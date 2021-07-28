@@ -6,7 +6,7 @@ import br.cin.ufpe.ffcs.jmiddleware.model.Message;
 import br.cin.ufpe.ffcs.jmiddleware.model.MessageBody;
 import br.cin.ufpe.ffcs.jmiddleware.model.MessageHeader;
 import br.cin.ufpe.ffcs.jmiddleware.model.MessageType;
-import br.cin.ufpe.ffcs.jmiddleware.model.RemoteObject;
+import br.cin.ufpe.ffcs.jmiddleware.model.ConvertCaseImpl;
 import br.cin.ufpe.ffcs.jmiddleware.model.ReplyBody;
 import br.cin.ufpe.ffcs.jmiddleware.model.ReplyHeader;
 
@@ -21,7 +21,7 @@ public class Invoker {
 			String operation = i.getBody().getRequestHeader().getOperation();
 			String params = i.getBody().getRequestBody().getBody().get(0);
 			
-			RemoteObject remoteObject = new RemoteObject();
+			ConvertCaseImpl remoteObject = new ConvertCaseImpl();
 			switch (operation) {
 			case "convertToUpper":
 				convertedMessage = remoteObject.convertToUpper(params);

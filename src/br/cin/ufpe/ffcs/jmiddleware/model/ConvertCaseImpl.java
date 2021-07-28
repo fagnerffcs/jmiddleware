@@ -1,6 +1,6 @@
 package br.cin.ufpe.ffcs.jmiddleware.model;
 
-public class RemoteObject implements IConvertCase {
+public class ConvertCaseImpl implements IConvertCase {
 	
 	public String convertToUpper(String message) {
 		return message.toUpperCase();
