@@ -2,19 +2,13 @@ package br.cin.ufpe.ffcs.jmiddleware.distribuicao;
 
 import java.io.IOException;
 
-import br.cin.ufpe.ffcs.jmiddleware.model.Message;
-import br.cin.ufpe.ffcs.jmiddleware.model.MessageBody;
-import br.cin.ufpe.ffcs.jmiddleware.model.MessageHeader;
-import br.cin.ufpe.ffcs.jmiddleware.model.MessageType;
-import br.cin.ufpe.ffcs.jmiddleware.model.ConvertCaseImpl;
-import br.cin.ufpe.ffcs.jmiddleware.model.ReplyBody;
-import br.cin.ufpe.ffcs.jmiddleware.model.ReplyHeader;
+import br.cin.ufpe.ffcs.jmiddleware.negocio.ConvertCaseImpl;
 
 public class Invoker {
 	
 	public byte[] invoke(byte[] m) throws IOException {
 		Marshaller marshaller = new Marshaller();
-		Message i = marshaller.unmarshall(m);
+		PacketMessage i = marshaller.unmarshall(m);
 		String convertedMessage = "";
 		
 		try {
@@ -35,9 +29,9 @@ public class Invoker {
 			
 			ReplyHeader replyHeader = new ReplyHeader();
 			ReplyBody replyBody = new ReplyBody(convertedMessage);
-			MessageHeader messageHeader = new MessageHeader("MyMid", 1, false, MessageType.RESPONSE);
+			MessageHeader messageHeader = new MessageHeader("MIOP", 1, false, MessageType.RESPONSE);
 			MessageBody messageBody = new MessageBody(null, null, replyHeader, replyBody);
-			Message message = new Message(messageHeader, messageBody);    				
+			PacketMessage message = new PacketMessage(messageHeader, messageBody);    				
 			
 			return marshaller.marshall(message);
 		} catch(Exception e) {
@@ -45,5 +39,4 @@ public class Invoker {
 		}
 		return m;
 	}
-
 }

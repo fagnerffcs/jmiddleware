@@ -1,4 +1,4 @@
-package br.cin.ufpe.ffcs.jmiddleware.model;
+package br.cin.ufpe.ffcs.jmiddleware.distribuicao;
 
 import java.io.Serializable;
 import java.util.ArrayList;
