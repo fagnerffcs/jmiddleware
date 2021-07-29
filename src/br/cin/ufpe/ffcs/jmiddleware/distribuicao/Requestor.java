@@ -40,8 +40,9 @@ public class Requestor {
 		Marshaller marshaller = new Marshaller();
 		byte[] marshalledMessage = marshaller.marshall(message);
 		this.crh.send(marshalledMessage);
-		PacketMessage reppliedMsg = marshaller.unmarshall(this.crh.receive());
-		return reppliedMsg.getBody().getReplyBody().getOperationResult().toString();
+		byte[] unmarshalledMessage = this.crh.receive();
+		PacketMessage repliedMsg = marshaller.unmarshall(unmarshalledMessage);
+		return repliedMsg !=null ? repliedMsg.getBody().getReplyBody().getOperationResult().toString() : null;
 	}	
 
 }

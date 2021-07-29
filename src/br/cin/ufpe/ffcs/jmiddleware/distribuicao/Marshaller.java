@@ -17,6 +17,9 @@ public class Marshaller {
 	}
 
 	public PacketMessage unmarshall(byte[] msgToBeUnmarshalled) {
+		if(msgToBeUnmarshalled==null) {
+			return null;
+		}
 		ByteArrayInputStream byteStream = new ByteArrayInputStream(msgToBeUnmarshalled);
 		ObjectInputStream objectStream = null;
 		try {

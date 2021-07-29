@@ -13,48 +13,52 @@ public class ServerRequestHandlerTCP {
 
 	private int tamanhoMensagemEnviada;
 	private int tamanhoMensagemRecebida;
-	private DataOutputStream outToClient = null;
-	private DataInputStream inFromClient = null;
+	private DataOutputStream saida = null;
+	private DataInputStream entrada = null;
 	
-	public ServerRequestHandlerTCP(int porta){
+	public ServerRequestHandlerTCP(int porta) throws IOException{
 		this.porta = porta;
 	}
 	
 	public void send(byte[] msgToClient) throws IOException {
-		serverSocket = new ServerSocket(porta);
+		if(serverSocket==null || serverSocket.isClosed()) {
+			serverSocket = new ServerSocket(porta);
+		}
 		conn = serverSocket.accept();
 
-		outToClient = new DataOutputStream(conn.getOutputStream());
-		inFromClient = new DataInputStream(conn.getInputStream());
+		saida = new DataOutputStream(conn.getOutputStream());
+		entrada = new DataInputStream(conn.getInputStream());
 		
 		tamanhoMensagemEnviada = msgToClient.length;
-		outToClient.writeInt(tamanhoMensagemEnviada);
-		outToClient.write(msgToClient);
-		outToClient.flush();		
+		saida.writeInt(tamanhoMensagemEnviada);
+		saida.write(msgToClient);
+		saida.flush();
 		
-//		serverSocket.close();
-//		conn.close();
-//		outToClient.close();
-//		inFromClient.close();
+		serverSocket.close();
+		conn.close();
+		saida.close();
+		entrada.close();
 	}
 	
 	public byte[] receive() throws IOException {
 		byte[] msgRecebida = null;
-		serverSocket = new ServerSocket(porta);
+		if(serverSocket==null || serverSocket.isClosed()) {
+			serverSocket = new ServerSocket(porta);
+		}
 		conn = serverSocket.accept();
 
-		outToClient = new DataOutputStream(conn.getOutputStream());
-		inFromClient = new DataInputStream(conn.getInputStream());
+		saida = new DataOutputStream(conn.getOutputStream());
+		entrada = new DataInputStream(conn.getInputStream());
 		
-		tamanhoMensagemRecebida = inFromClient.readInt();
+		tamanhoMensagemRecebida = entrada.readInt();
 		msgRecebida = new byte[tamanhoMensagemRecebida];
 		
-		inFromClient.read(msgRecebida, 0, tamanhoMensagemRecebida);
+		entrada.read(msgRecebida, 0, tamanhoMensagemRecebida);
 		
-//		serverSocket.close();
-//		conn.close();
-//		outToClient.close();
-//		inFromClient.close();
+		serverSocket.close();
+		conn.close();
+		saida.close();
+		entrada.close();
 		
 		return msgRecebida;
 	}
