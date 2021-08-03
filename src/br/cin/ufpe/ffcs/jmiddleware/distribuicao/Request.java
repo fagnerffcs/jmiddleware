@@ -4,20 +4,20 @@ import java.util.ArrayList;
 
 public class Request {
 	private String operationName;
-	private ArrayList<String> params;
+	private ArrayList<Object> params;
 	public String getOperationName() {
 		return operationName;
 	}
 	public void setOperationName(String operationName) {
 		this.operationName = operationName;
 	}
-	public ArrayList<String> getParams() {
+	public ArrayList<Object> getParams() {
 		return params;
 	}
-	public void setParams(ArrayList<String> params) {
+	public void setParams(ArrayList<Object> params) {
 		this.params = params;
 	}
-	public Request(String operationName, ArrayList<String> params) {
+	public Request(String operationName, ArrayList<Object> params) {
 		super();
 		this.operationName = operationName;
 		this.params = params;

@@ -14,7 +14,7 @@ public class Requestor {
 		super();
 		try {
 			if(protocol.equals(MiddlewareProtocol.TCP)) {
-				this.crh = (IClientRequestHandler) new ClientRequestHandlerTCP(host, porta);
+				this.crh = (IClientRequestHandler) new ClientRequestHandlerTCP(porta);
 			} else if(protocol.equals(MiddlewareProtocol.UDP)) {
 				this.crh = (IClientRequestHandler) new ClientRequestHandlerUDP(host, porta);			
 			}
@@ -27,7 +27,7 @@ public class Requestor {
 		super();
 	}
 	
-	public String invoke(Invocation invocation) throws IOException, InterruptedException, ClassNotFoundException {
+	public Object invoke(Invocation invocation) throws IOException, InterruptedException, ClassNotFoundException {
 		//construcao do messageHeader
 		MessageHeader messageHeader = new MessageHeader("MyMid", 1, false, MessageType.REQUEST);
 		//construcao do request (header + body)
@@ -39,8 +39,7 @@ public class Requestor {
 		PacketMessage message = new PacketMessage(messageHeader, messageBody);
 		Marshaller marshaller = new Marshaller();
 		byte[] marshalledMessage = marshaller.marshall(message);
-		this.crh.send(marshalledMessage);
-		byte[] unmarshalledMessage = this.crh.receive();
+		byte[] unmarshalledMessage = this.crh.sendReceive(marshalledMessage);
 		PacketMessage repliedMsg = marshaller.unmarshall(unmarshalledMessage);
 		return repliedMsg !=null ? repliedMsg.getBody().getReplyBody().getOperationResult().toString() : null;
 	}	

@@ -24,11 +24,6 @@ public class Marshaller {
 		ObjectInputStream objectStream = null;
 		try {
 			objectStream = new ObjectInputStream(byteStream);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		try {
 			return (PacketMessage) objectStream.readObject();
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();

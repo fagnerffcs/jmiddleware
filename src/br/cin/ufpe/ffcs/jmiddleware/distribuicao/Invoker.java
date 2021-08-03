@@ -13,7 +13,7 @@ public class Invoker {
 		
 		try {
 			String operation = i.getBody().getRequestHeader().getOperation();
-			String params = i.getBody().getRequestBody().getBody().get(0);
+			String params = (String) i.getBody().getRequestBody().getBody().get(0);
 			
 			ConvertCaseImpl remoteObject = new ConvertCaseImpl();
 			switch (operation) {

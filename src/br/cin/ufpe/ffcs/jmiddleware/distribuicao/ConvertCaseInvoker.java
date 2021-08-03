@@ -7,7 +7,7 @@ import br.cin.ufpe.ffcs.jmiddleware.negocio.ConvertCaseImpl;
 
 public class ConvertCaseInvoker {
 	
-	public void invoke() throws IOException {
+	public void invoke() throws IOException, ClassNotFoundException {
 		ServerRequestHandlerTCP srhTcp = new ServerRequestHandlerTCP(1300);
 		Marshaller marshaller = new Marshaller();
 		ConvertCaseImpl convertCaseImpl = new ConvertCaseImpl();
@@ -19,15 +19,17 @@ public class ConvertCaseInvoker {
 			//unmarshall
 			PacketMessage packetRequest = marshaller.unmarshall(receivedMsgBytes);
 			String operation = packetRequest.getBody().getRequestHeader().getOperation();
-			String convertedMsg = "";
+			String convertedMsg = "", par1 = "";
 			
 			//demux request
 			switch (operation) {
 			case "convertToUpper":
-				convertedMsg = convertCaseImpl.convertToUpper(packetRequest.getBody().getRequestBody().getBody().get(0));
+				par1 = (String) packetRequest.getBody().getRequestBody().getBody().get(0);
+				convertedMsg = convertCaseImpl.convertToUpper(par1);
 				break;
 			case "convertToLower":
-				convertedMsg = convertCaseImpl.convertToLower(packetRequest.getBody().getRequestBody().getBody().get(0));
+				par1 = (String) packetRequest.getBody().getRequestBody().getBody().get(0);
+				convertedMsg = convertCaseImpl.convertToLower(par1);
 				break;
 			}
 			

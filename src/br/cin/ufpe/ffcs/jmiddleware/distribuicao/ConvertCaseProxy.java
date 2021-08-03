@@ -23,11 +23,11 @@ public class ConvertCaseProxy extends ClientProxy implements IConvertCase {
 	public String convertToUpper(String mensagem) {
 		try {
 			Requestor requestor = new Requestor(protocol, host, port);
-			ArrayList<String> params = new ArrayList<String>();
+			ArrayList<Object> params = new ArrayList<Object>();
 			params.add(mensagem);
 			Request request = new Request("convertToUpper", params);
 			Invocation invocation = new Invocation(request);
-			return requestor.invoke(invocation);
+			return (String) requestor.invoke(invocation);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -38,11 +38,11 @@ public class ConvertCaseProxy extends ClientProxy implements IConvertCase {
 	public String convertToLower(String mensagem) {
 		try {
 			Requestor requestor = new Requestor(protocol, host, port);
-			ArrayList<String> params = new ArrayList<String>();
+			ArrayList<Object> params = new ArrayList<Object>();
 			params.add(mensagem);
 			Request request = new Request("convertToLower", params);
 			Invocation invocation = new Invocation(request);
-			return requestor.invoke(invocation);
+			return (String) requestor.invoke(invocation);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
