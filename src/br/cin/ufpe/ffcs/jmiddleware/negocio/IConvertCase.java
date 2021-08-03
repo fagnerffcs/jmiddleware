@@ -1,4 +1,4 @@
-package br.cin.ufpe.ffcs.jmiddleware.model;
+package br.cin.ufpe.ffcs.jmiddleware.negocio;
 
 public interface IConvertCase {
 	public <T> String convertToUpper(String mensagem);

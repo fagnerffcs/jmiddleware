@@ -1,24 +1,29 @@
 package br.cin.ufpe.ffcs.jmiddleware;
 
-import java.io.IOException;
+import java.util.logging.Logger;
 
-import br.cin.ufpe.ffcs.jmiddleware.infraestrutura.tcp.ServerRequestHandlerTCP;
-import br.cin.ufpe.ffcs.jmiddleware.infraestrutura.udp.ServerRequestHandlerUDP;
-import br.cin.ufpe.ffcs.jmiddleware.model.MiddlewareProtocol;
+import br.cin.ufpe.ffcs.jmiddleware.distribuicao.ConvertCaseInvoker;
+import br.cin.ufpe.ffcs.jmiddleware.distribuicao.ConvertCaseProxy;
+import br.cin.ufpe.ffcs.jmiddleware.distribuicao.MiddlewareProtocol;
+import br.cin.ufpe.ffcs.jmiddleware.servicoscomuns.NamingProxy;
 
 public class Server {
 	
-	private static MiddlewareProtocol protocol = MiddlewareProtocol.TCP;
+	private static final Logger LOGGER = Logger.getAnonymousLogger();
 	
-	public static void main(String[] args) throws IOException, ClassNotFoundException {
-		if(protocol.equals(MiddlewareProtocol.TCP)) {
-			ServerRequestHandlerTCP seHandlerTCP = new ServerRequestHandlerTCP(1300);
-			seHandlerTCP.sendReceive();
-		} else {
-			ServerRequestHandlerUDP seHandlerUDP = new ServerRequestHandlerUDP(1300);
-			byte[] msgDoCliente = seHandlerUDP.receive();
-			String msgFmt = new String(msgDoCliente);
-			seHandlerUDP.send(msgFmt.getBytes());			
-		}
+	public static void main(String[] args) throws Throwable {
+		//create a built-in proxy do naming service
+		NamingProxy namingProxy = new NamingProxy("localhost", 1313, MiddlewareProtocol.TCP);
+		
+		//create a instance of ConverCaseProxy
+		ConvertCaseProxy convertCaseProxy = new ConvertCaseProxy("localhost", 1300, MiddlewareProtocol.TCP);
+		
+		//register service
+		namingProxy.register("ConvertCase", convertCaseProxy);
+		
+		//control loop to middleware
+		LOGGER.info("Servidor iniciado com sucesso.");
+		ConvertCaseInvoker invoker = new ConvertCaseInvoker();
+		invoker.invoke();
 	}
 }

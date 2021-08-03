@@ -1,8 +1,8 @@
-package br.cin.ufpe.ffcs.jmiddleware.model;
+package br.cin.ufpe.ffcs.jmiddleware.distribuicao;
 
 import java.io.Serializable;
 
-public class Message implements Serializable {
+public class PacketMessage implements Serializable {
 	private static final long serialVersionUID = 5176094953316465233L;
 	private MessageHeader header;
     private MessageBody body;
@@ -19,12 +19,12 @@ public class Message implements Serializable {
 	public void setBody(MessageBody body) {
 		this.body = body;
 	}
-	public Message(MessageHeader header, MessageBody body) {
+	public PacketMessage(MessageHeader header, MessageBody body) {
 		super();
 		this.header = header;
 		this.body = body;
 	}
-	public Message() {
+	public PacketMessage() {
 		super();
 	}
 	@Override

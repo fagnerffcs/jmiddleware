@@ -1,4 +1,4 @@
-package br.cin.ufpe.ffcs.jmiddleware.model;
+package br.cin.ufpe.ffcs.jmiddleware.negocio;
 
 public class ConvertCaseImpl implements IConvertCase {
 	

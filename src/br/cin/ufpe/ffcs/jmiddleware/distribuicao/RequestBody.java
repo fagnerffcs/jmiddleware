@@ -1,4 +1,4 @@
-package br.cin.ufpe.ffcs.jmiddleware.model;
+package br.cin.ufpe.ffcs.jmiddleware.distribuicao;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -7,13 +7,13 @@ public class RequestBody implements Serializable {
 
 	private static final long serialVersionUID = -433116932758592596L;
 
-	private ArrayList<String> body;
+	private ArrayList<Object> body;
 
-	public ArrayList<String> getBody() {
+	public ArrayList<Object> getBody() {
 		return body;
 	}
 
-	public void setBody(ArrayList<String> body) {
+	public void setBody(ArrayList<Object> body) {
 		this.body = body;
 	}
 
@@ -21,7 +21,7 @@ public class RequestBody implements Serializable {
 		super();
 	}
 
-	public RequestBody(ArrayList<String> body) {
+	public RequestBody(ArrayList<Object> body) {
 		super();
 		this.body = body;
 	}

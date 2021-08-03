@@ -6,11 +6,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import br.cin.ufpe.ffcs.jmiddleware.model.Message;
-
 public class Marshaller {
 	
-	public byte[] marshall(Message msgToBeMarshalled) throws IOException {
+	public byte[] marshall(PacketMessage msgToBeMarshalled) throws IOException {
 		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 		ObjectOutputStream objectStream = new ObjectOutputStream(byteStream);
 		objectStream.writeObject(msgToBeMarshalled);
@@ -18,17 +16,15 @@ public class Marshaller {
 		return byteStream.toByteArray();
 	}
 
-	public Message unmarshall(byte[] msgToBeUnmarshalled) {
+	public PacketMessage unmarshall(byte[] msgToBeUnmarshalled) {
+		if(msgToBeUnmarshalled==null) {
+			return null;
+		}
 		ByteArrayInputStream byteStream = new ByteArrayInputStream(msgToBeUnmarshalled);
 		ObjectInputStream objectStream = null;
 		try {
 			objectStream = new ObjectInputStream(byteStream);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			return (Message) objectStream.readObject();
+			return (PacketMessage) objectStream.readObject();
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}
