@@ -21,15 +21,12 @@ public class NamingInvoker {
 		while(true) {
 			//receive data
 			byte[] receivedMsgBytes = srhTcp.receive();
-			if(receivedMsgBytes.length==0) {
-				continue;
-			}
-			
+
 			//unmarshall
 			PacketMessage packetRequest = marshaller.unmarshall(receivedMsgBytes);
 			String operation = packetRequest.getBody().getRequestHeader().getOperation();
 			Object result = null;
-			
+
 			//demux request
 			switch (operation) {
 			case "register":
@@ -43,17 +40,18 @@ public class NamingInvoker {
 				result = namingImpl.list(packetRequest.getBody().getRequestBody().getBody().get(0));
 				break;
 			}
-			
+
 			//assembly packet
 			ReplyHeader replyHeader = new ReplyHeader("", packetRequest.getBody().getRequestHeader().getRequestId(), 1);
 			ReplyBody replyBody = new ReplyBody(result);
 			MessageHeader messageHeader = new MessageHeader("NamingOP", 1, true, MessageType.RESPONSE);
 			MessageBody messageBody = new MessageBody(null, null, replyHeader, replyBody);
 			PacketMessage replyMessage = new PacketMessage(messageHeader, messageBody);
-			
+
 			//marshall
 			byte[] msgToClient = marshaller.marshall(replyMessage);
-			
+
+			//send data
 			srhTcp.send(msgToClient);
 		}		
 	}
