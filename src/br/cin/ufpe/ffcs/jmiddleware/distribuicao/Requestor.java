@@ -14,7 +14,7 @@ public class Requestor {
 		super();
 		try {
 			if(protocol.equals(MiddlewareProtocol.TCP)) {
-				this.crh = (IClientRequestHandler) new ClientRequestHandlerTCP(porta);
+				this.crh = (IClientRequestHandler) new ClientRequestHandlerTCP(host, porta);
 			} else if(protocol.equals(MiddlewareProtocol.UDP)) {
 				this.crh = (IClientRequestHandler) new ClientRequestHandlerUDP(host, porta);			
 			}

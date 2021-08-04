@@ -15,8 +15,6 @@ public class NamingProxy extends ClientProxy implements INaming {
 
 	private static final long serialVersionUID = -6405977059068395845L;
 
-	//utilizar o requestor e copia do COnvertCaseProxy com as operacoes de register, lookup e list	
-	
 	public NamingProxy(String host, int port, MiddlewareProtocol protocol) {
 		super();
 		this.host = host;

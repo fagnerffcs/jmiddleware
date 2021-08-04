@@ -1,45 +1,36 @@
 package br.cin.ufpe.ffcs.jmiddleware.infraestrutura.tcp;
 
 import java.io.IOException;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.net.InetAddress;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 import br.cin.ufpe.ffcs.jmiddleware.infraestrutura.IClientRequestHandler;
 
 public class ClientRequestHandlerTCP implements IClientRequestHandler {
-	
 	private int porta;
+	private String host;
+	private Socket socket;
+    private ObjectOutputStream saida;
+    private ObjectInputStream entrada;
 	
-	public ClientRequestHandlerTCP(int porta) throws UnknownHostException, IOException {
+	public ClientRequestHandlerTCP(String host, int porta) throws UnknownHostException, IOException {
 		super();
+		this.host = host;
 		this.porta = porta;
+		this.socket = new Socket(this.host, this.porta);
 	}
 	
-	public byte[] sendReceive(byte[] msg) throws UnknownHostException, IOException {
-		InetAddress host = InetAddress.getLocalHost();
-		Socket socket = new Socket(host.getHostAddress(), this.porta);
-
-	    DataOutputStream saida;
-	    DataInputStream entrada;		
-		
+	public byte[] sendReceive(byte[] msg) throws UnknownHostException, IOException, ClassNotFoundException {
 		//send data to using TCP Channel
-		saida = new DataOutputStream(socket.getOutputStream());
-		saida.writeInt(msg.length);
-		saida.write(msg);
-		saida.flush();
+		this.saida = new ObjectOutputStream(socket.getOutputStream());
+		this.saida.writeObject(msg);
+		this.saida.flush();
 		
 		//receive data
-		entrada = new DataInputStream(socket.getInputStream());
-		int tamanho = entrada.readInt();
-		byte[] retorno = new byte[tamanho];
-		entrada.read(retorno, 0, tamanho);
-		
-		//close resources
-		saida.close();
-		entrada.close();
+		this.entrada = new ObjectInputStream(socket.getInputStream());
+		byte[] retorno = (byte[]) entrada.readObject();
 		
 		return retorno;
 	}

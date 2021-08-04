@@ -19,11 +19,14 @@ public class Server {
 		ConvertCaseProxy convertCaseProxy = new ConvertCaseProxy("localhost", 1300, MiddlewareProtocol.TCP);
 		
 		//register service
-		namingProxy.register("ConvertCase", convertCaseProxy);
+		if(namingProxy.register("ConvertCase", convertCaseProxy)) {
+			//control loop to middleware
+			LOGGER.info("Servidor iniciado com sucesso.");
+			ConvertCaseInvoker invoker = new ConvertCaseInvoker();
+			invoker.invoke();			
+		} else {
+			LOGGER.info("Erro ao iniciar o servidor.");
+		}
 		
-		//control loop to middleware
-		LOGGER.info("Servidor iniciado com sucesso.");
-		ConvertCaseInvoker invoker = new ConvertCaseInvoker();
-		invoker.invoke();
 	}
 }

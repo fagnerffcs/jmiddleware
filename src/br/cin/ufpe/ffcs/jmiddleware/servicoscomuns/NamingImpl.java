@@ -13,7 +13,7 @@ public class NamingImpl {
 		String name = (String) parameter1;
 		ClientProxy clientProxy = (ClientProxy) parameter2;
 		repository.put(name, clientProxy);
-		return "sucesso";
+		return "true";
 	}
 
 	public ClientProxy lookup(Object objectName) {
