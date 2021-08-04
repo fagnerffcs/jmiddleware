@@ -8,18 +8,15 @@ import java.net.Socket;
 
 public class ServerRequestHandlerTCP {
 	private ServerSocket serverSocket;
-	private Socket conn;
-
-	private DataOutputStream saida = null;
-	private DataInputStream entrada = null;
 	
 	public ServerRequestHandlerTCP(int porta) throws IOException{
 		this.serverSocket = new ServerSocket(porta);
 	}
 	
 	public void send(byte[] msgToClient) throws IOException {
-		conn = serverSocket.accept();
-
+		Socket conn = serverSocket.accept();
+		DataOutputStream saida = null;
+		
 		saida = new DataOutputStream(conn.getOutputStream());
 		saida.writeInt(msgToClient.length);
 		saida.write(msgToClient);
@@ -30,11 +27,12 @@ public class ServerRequestHandlerTCP {
 	}
 	
 	public byte[] receive() throws IOException, ClassNotFoundException {
-		conn = serverSocket.accept();
+		Socket conn = serverSocket.accept();
+		DataInputStream entrada = null;
 
-		byte[] msgRecebida = null;
 		entrada = new DataInputStream(conn.getInputStream());
 		int tamanho = entrada.readInt();
+		byte[] msgRecebida = new byte[tamanho];
 		entrada.read(msgRecebida, 0, tamanho);
 		
 		entrada.close();

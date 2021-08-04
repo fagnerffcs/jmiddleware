@@ -13,10 +13,6 @@ public class ClientRequestHandlerTCP implements IClientRequestHandler {
 	
 	private int porta;
 	
-	private Socket socket = null;
-    private DataOutputStream saida;
-    private DataInputStream entrada;
-    
 	public ClientRequestHandlerTCP(int porta) throws UnknownHostException, IOException {
 		super();
 		this.porta = porta;
@@ -24,7 +20,10 @@ public class ClientRequestHandlerTCP implements IClientRequestHandler {
 	
 	public byte[] sendReceive(byte[] msg) throws UnknownHostException, IOException {
 		InetAddress host = InetAddress.getLocalHost();
-		socket = new Socket(host.getHostAddress(), this.porta);
+		Socket socket = new Socket(host.getHostAddress(), this.porta);
+
+	    DataOutputStream saida;
+	    DataInputStream entrada;		
 		
 		//send data to using TCP Channel
 		saida = new DataOutputStream(socket.getOutputStream());
@@ -33,9 +32,9 @@ public class ClientRequestHandlerTCP implements IClientRequestHandler {
 		saida.flush();
 		
 		//receive data
-		byte[] retorno = null;
 		entrada = new DataInputStream(socket.getInputStream());
 		int tamanho = entrada.readInt();
+		byte[] retorno = new byte[tamanho];
 		entrada.read(retorno, 0, tamanho);
 		
 		//close resources
@@ -44,5 +43,4 @@ public class ClientRequestHandlerTCP implements IClientRequestHandler {
 		
 		return retorno;
 	}
-
 }
