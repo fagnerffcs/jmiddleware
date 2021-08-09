@@ -6,7 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class ServerRequestHandlerTCP {
+public class ServerRequestHandlerTCP implements Runnable {
 	private ServerSocket serverSocket;
 	private ObjectOutputStream saida;
 	private ObjectInputStream entrada;
@@ -14,17 +14,25 @@ public class ServerRequestHandlerTCP {
 
 	public ServerRequestHandlerTCP(int porta) throws IOException {
 		this.serverSocket = new ServerSocket(porta);
-		this.conn = serverSocket.accept();
-		saida = new ObjectOutputStream(conn.getOutputStream());
-		entrada = new ObjectInputStream(conn.getInputStream());
 	}
-
-	public void send(byte[] msgToClient) throws IOException {
+	
+	@Override
+	public void run() {
+		try {
+			this.conn = this.serverSocket.accept();
+			saida = new ObjectOutputStream(conn.getOutputStream());
+			entrada = new ObjectInputStream(conn.getInputStream());
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public synchronized void send(byte[] msgToClient) throws IOException {
 		saida.writeObject(msgToClient);
 		saida.flush();
 	}
 
-	public byte[] receive() throws IOException, ClassNotFoundException {
+	public synchronized byte[] receive() throws IOException, ClassNotFoundException {
 		byte[] msgRecebida = (byte[]) entrada.readObject();
 		return msgRecebida;
 	}

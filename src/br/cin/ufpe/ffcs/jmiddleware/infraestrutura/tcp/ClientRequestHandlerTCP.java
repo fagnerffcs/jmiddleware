@@ -23,14 +23,20 @@ public class ClientRequestHandlerTCP implements IClientRequestHandler {
 	}
 
 	public byte[] sendReceive(byte[] msg) throws UnknownHostException, IOException, ClassNotFoundException {
-		// send data to using TCP Channel
+		//create streams
+		this.entrada = new ObjectInputStream(socket.getInputStream());
 		this.saida = new ObjectOutputStream(socket.getOutputStream());
+		
+		// send data to using TCP Channel
 		this.saida.writeObject(msg);
 		this.saida.flush();
 
 		// receive data
-		this.entrada = new ObjectInputStream(socket.getInputStream());
 		byte[] retorno = (byte[]) entrada.readObject();
+		
+		//close streams
+		this.entrada.close();
+		this.saida.close();
 
 		return retorno;
 	}

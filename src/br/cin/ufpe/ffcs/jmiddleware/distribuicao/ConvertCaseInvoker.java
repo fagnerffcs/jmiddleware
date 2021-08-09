@@ -7,8 +7,11 @@ import br.cin.ufpe.ffcs.jmiddleware.negocio.ConvertCaseImpl;
 
 public class ConvertCaseInvoker {
 	
-	public void invoke() throws IOException, ClassNotFoundException {
+	public void invoke() throws IOException, ClassNotFoundException, InterruptedException {
 		ServerRequestHandlerTCP srhTcp = new ServerRequestHandlerTCP(1300);
+		Thread t = new Thread(srhTcp);
+		t.start();
+		t.join();		
 		Marshaller marshaller = new Marshaller();
 		ConvertCaseImpl convertCaseImpl = new ConvertCaseImpl();
 

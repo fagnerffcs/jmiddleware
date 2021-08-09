@@ -13,8 +13,11 @@ import br.cin.ufpe.ffcs.jmiddleware.infraestrutura.tcp.ServerRequestHandlerTCP;
 
 public class NamingInvoker {
 
-	public void invoke() throws IOException, ClassNotFoundException {
+	public void invoke() throws IOException, ClassNotFoundException, InterruptedException {
 		ServerRequestHandlerTCP srhTcp = new ServerRequestHandlerTCP(1313);
+		Thread t = new Thread(srhTcp);
+		t.start();
+		t.join();
 		Marshaller marshaller = new Marshaller();
 		NamingImpl namingImpl = new NamingImpl();
 
