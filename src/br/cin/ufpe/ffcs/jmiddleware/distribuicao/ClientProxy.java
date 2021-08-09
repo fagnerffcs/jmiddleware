@@ -9,4 +9,9 @@ public abstract class ClientProxy implements Serializable {
 	protected int port;
 	protected MiddlewareProtocol protocol;
 
+	@Override
+	public String toString() {
+		return "ClientProxy [host=" + host + ", port=" + port + ", protocol=" + protocol + "]";
+	}
+
 }

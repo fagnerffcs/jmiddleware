@@ -14,9 +14,6 @@ public class ServerRequestHandlerTCP {
 
 	public ServerRequestHandlerTCP(int porta) throws IOException {
 		this.serverSocket = new ServerSocket(porta);
-		this.conn = serverSocket.accept();
-		saida = new ObjectOutputStream(conn.getOutputStream());
-		entrada = new ObjectInputStream(conn.getInputStream());
 	}
 
 	public void send(byte[] msgToClient) throws IOException {
@@ -25,6 +22,10 @@ public class ServerRequestHandlerTCP {
 	}
 
 	public byte[] receive() throws IOException, ClassNotFoundException {
+		this.conn = serverSocket.accept();
+		entrada = new ObjectInputStream(conn.getInputStream());
+		saida = new ObjectOutputStream(conn.getOutputStream());
+
 		byte[] msgRecebida = (byte[]) entrada.readObject();
 		return msgRecebida;
 	}

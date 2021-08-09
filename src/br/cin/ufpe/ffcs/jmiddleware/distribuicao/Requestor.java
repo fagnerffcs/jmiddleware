@@ -41,7 +41,7 @@ public class Requestor {
 		byte[] marshalledMessage = marshaller.marshall(message);
 		byte[] unmarshalledMessage = this.crh.sendReceive(marshalledMessage);
 		PacketMessage repliedMsg = marshaller.unmarshall(unmarshalledMessage);
-		return repliedMsg !=null ? repliedMsg.getBody().getReplyBody().getOperationResult().toString() : null;
+		return repliedMsg !=null ? repliedMsg.getBody().getReplyBody().getOperationResult() : null;
 	}	
 
 }

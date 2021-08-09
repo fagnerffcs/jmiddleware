@@ -11,12 +11,12 @@ import br.cin.ufpe.ffcs.jmiddleware.distribuicao.ReplyBody;
 import br.cin.ufpe.ffcs.jmiddleware.distribuicao.ReplyHeader;
 import br.cin.ufpe.ffcs.jmiddleware.infraestrutura.tcp.ServerRequestHandlerTCP;
 
-public class NamingInvoker extends AbstractNamingInvoker {
+public class NamingInvokerLCM extends AbstractNamingInvoker {
 
 	public void invoke() throws IOException, ClassNotFoundException {
 		ServerRequestHandlerTCP srhTcp = new ServerRequestHandlerTCP(1313);
 		Marshaller marshaller = new Marshaller();
-		NamingImpl namingImpl = new NamingImpl();
+		LifeCycleManager.createFactory(10);
 
 		while(true) {
 			//receive data
@@ -27,6 +27,9 @@ public class NamingInvoker extends AbstractNamingInvoker {
 			String operation = packetRequest.getBody().getRequestHeader().getOperation();
 			Object result = null;
 
+			//invoke pool from LCM
+			NamingImpl namingImpl = LifeCycleManager.getInstance();
+			
 			//demux request
 			switch (operation) {
 			case "register":
@@ -40,6 +43,9 @@ public class NamingInvoker extends AbstractNamingInvoker {
 				result = namingImpl.list();
 				break;
 			}
+			
+			//returns another slot to LCM
+			LifeCycleManager.freeInstance();
 
 			//assembly packet
 			ReplyHeader replyHeader = new ReplyHeader("", packetRequest.getBody().getRequestHeader().getRequestId(), 1);
@@ -55,5 +61,4 @@ public class NamingInvoker extends AbstractNamingInvoker {
 			srhTcp.send(msgToClient);
 		}		
 	}
-
 }

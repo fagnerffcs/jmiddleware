@@ -13,14 +13,20 @@ public class NamingImpl {
 		String name = (String) parameter1;
 		ClientProxy clientProxy = (ClientProxy) parameter2;
 		repository.put(name, clientProxy);
+		System.out.println(clientProxy);
 		return "true";
 	}
 
 	public ClientProxy lookup(Object objectName) {
-		return repository.get(objectName);
+		ClientProxy registeredProxy = repository.get(objectName);
+		if(registeredProxy!=null) {
+			return registeredProxy;	
+		} else {
+			return null;
+		}
 	}
 
-	public String list(Object string) {
+	public String list() {
 		return  Arrays.asList(repository.values()).toString();
 	}
 
