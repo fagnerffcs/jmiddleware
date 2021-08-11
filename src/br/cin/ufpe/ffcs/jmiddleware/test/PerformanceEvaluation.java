@@ -1,10 +1,9 @@
 package br.cin.ufpe.ffcs.jmiddleware.test;
-
 import java.io.IOException;
 
 import br.cin.ufpe.ffcs.jmiddleware.Client;
 
-public class EvaluationLCM {
+public class PerformanceEvaluation {
 
 	private static int THREAD_SIZE = 100;
 	
@@ -34,8 +33,5 @@ public class EvaluationLCM {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		
-
 	}
-
 }

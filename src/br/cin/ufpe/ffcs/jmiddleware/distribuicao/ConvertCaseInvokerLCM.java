@@ -4,13 +4,14 @@ import java.io.IOException;
 
 import br.cin.ufpe.ffcs.jmiddleware.infraestrutura.tcp.ServerRequestHandlerTCP;
 import br.cin.ufpe.ffcs.jmiddleware.negocio.ConvertCaseImpl;
+import br.cin.ufpe.ffcs.jmiddleware.servicoscomuns.LifeCycleManager;
 
-public class ConvertCaseInvoker extends AbstractConvertInvoker {
+public class ConvertCaseInvokerLCM extends AbstractConvertInvoker {
 	
 	public void invoke() throws IOException, ClassNotFoundException {
 		ServerRequestHandlerTCP srhTcp = new ServerRequestHandlerTCP(1300);
 		Marshaller marshaller = new Marshaller();
-		ConvertCaseImpl convertCaseImpl = new ConvertCaseImpl();
+		LifeCycleManager.createFactory(10, ConvertCaseImpl.class.getCanonicalName());
 
 		while(true) {
 			//receive data
@@ -20,6 +21,9 @@ public class ConvertCaseInvoker extends AbstractConvertInvoker {
 			PacketMessage packetRequest = marshaller.unmarshall(receivedMsgBytes);
 			String operation = packetRequest.getBody().getRequestHeader().getOperation();
 			String convertedMsg = "", par1 = "";
+			
+			//invoke pool from LCM
+			ConvertCaseImpl convertCaseImpl = (ConvertCaseImpl) LifeCycleManager.getInstance();			
 			
 			//demux request
 			switch (operation) {
@@ -32,6 +36,8 @@ public class ConvertCaseInvoker extends AbstractConvertInvoker {
 				convertedMsg = convertCaseImpl.convertToLower(par1);
 				break;
 			}
+			
+			LifeCycleManager.releaseInstance();
 			
 			//assembly packet
 			ReplyHeader replyHeader = new ReplyHeader("", packetRequest.getBody().getRequestHeader().getRequestId(), 1);

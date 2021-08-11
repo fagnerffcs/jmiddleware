@@ -13,10 +13,10 @@ import br.cin.ufpe.ffcs.jmiddleware.infraestrutura.tcp.ServerRequestHandlerTCP;
 
 public class NamingInvokerLCM extends AbstractNamingInvoker {
 
-	public synchronized void invoke() throws IOException, ClassNotFoundException {
+	public void invoke() throws IOException, ClassNotFoundException {
 		ServerRequestHandlerTCP srhTcp = new ServerRequestHandlerTCP(1313);
 		Marshaller marshaller = new Marshaller();
-		LifeCycleManager.createFactory(100);
+		LifeCycleManager.createFactory(10, NamingImpl.class.getCanonicalName());
 
 		while(true) {
 			//receive data
@@ -28,7 +28,7 @@ public class NamingInvokerLCM extends AbstractNamingInvoker {
 			Object result = null;
 
 			//invoke pool from LCM
-			NamingImpl namingImpl = LifeCycleManager.getInstance(LifeCycleManager.getNextIndex());
+			NamingImpl namingImpl = (NamingImpl) LifeCycleManager.getInstance();
 			
 			//demux request
 			switch (operation) {
@@ -44,10 +44,8 @@ public class NamingInvokerLCM extends AbstractNamingInvoker {
 				break;
 			}
 			
-			LifeCycleManager.copyRegisteredObjectToPool(namingImpl);
-			
 			//returns another slot to LCM
-			LifeCycleManager.freeInstance();
+			LifeCycleManager.releaseInstance();
 
 			//assembly packet
 			ReplyHeader replyHeader = new ReplyHeader("", packetRequest.getBody().getRequestHeader().getRequestId(), 1);

@@ -9,6 +9,10 @@ import br.cin.ufpe.ffcs.jmiddleware.distribuicao.ClientProxy;
 public class NamingImpl {
 	private Map<String, ClientProxy> repository = new HashMap<String, ClientProxy>();
 
+	public NamingImpl() {
+		super();
+	}
+
 	public String register(Object parameter1, Object parameter2) {
 		String name = (String) parameter1;
 		ClientProxy clientProxy = (ClientProxy) parameter2;
