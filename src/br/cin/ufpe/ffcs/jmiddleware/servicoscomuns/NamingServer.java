@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 public class NamingServer {
 	
 	private static final Logger LOGGER = Logger.getAnonymousLogger();
-	
 	private static final LifeCycleMode LI_MODE = LifeCycleMode.ENABLED;
 	
 	public static void main(String[] args) throws Throwable {
